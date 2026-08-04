@@ -19,7 +19,11 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN bun run build
+# Bun can crash on exit (SIGILL/SIGSEGV) after `next build` has already finished.
+# Tolerate only those exit codes, and prove the build really produced
+# .next/BUILD_ID, which Next writes only on a successful build.
+RUN { bun run build; ec=$?; [ $ec -eq 0 ] || [ $ec -eq 132 ] || [ $ec -eq 139 ]; } \
+    && test -f .next/BUILD_ID
 
 # Production image, copy all the files and run next
 FROM base AS runner
