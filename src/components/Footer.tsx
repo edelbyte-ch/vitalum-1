@@ -1,3 +1,4 @@
+import { cacheLife } from 'next/cache'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Facebook, Instagram, Linkedin } from 'lucide-react'
@@ -8,7 +9,10 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 
-export default function Footer() {
+export default async function Footer() {
+  'use cache'
+  cacheLife('max')
+
   return (
     <footer className="border-t border-border bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
